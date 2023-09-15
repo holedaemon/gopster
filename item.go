@@ -15,7 +15,7 @@ type chartItem struct {
 	coverImage image.Image
 }
 
-// AddItem adds an item to a Chart.
+// AddItem adds an item to a chart.
 func (c *Chart) AddItem(title string, creator string, img image.Image) error {
 	if c.items == nil {
 		c.items = make([]*chartItem, 0)

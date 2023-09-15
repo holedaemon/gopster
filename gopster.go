@@ -49,7 +49,7 @@ func (c *Chart) Generate() image.Image {
 	// Draw chart items
 	for i, item := range c.items {
 		x := float64((i % c.width))
-		y := math.Floor(float64(i / c.width))
+		y := float64(i / c.width)
 
 		imgWidth, imgHeight := c.scaledDimensions(item.coverImage)
 

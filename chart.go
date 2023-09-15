@@ -55,7 +55,9 @@ func NewChart(opts ...Option) (*Chart, error) {
 	}
 
 	family := canvas.NewFontFamily("ubuntu-mono")
-	family.LoadFontFile("resources/ubuntu-mono.ttf", canvas.FontRegular)
+	if err := family.LoadFontFile("resources/ubuntu-mono.ttf", canvas.FontRegular); err != nil {
+		return nil, err
+	}
 	c.family = family
 
 	for _, o := range opts {

@@ -60,6 +60,8 @@ type Chart struct {
 	background color.Color
 	color      color.Color
 	family     *canvas.FontFamily
+
+	titles []string
 }
 
 // NewChart creates a new chart with the given settings.
@@ -69,6 +71,8 @@ func NewChart(opts ...Option) (*Chart, error) {
 		width:  defaultSize,
 		height: defaultSize,
 		gap:    defaultGap,
+
+		titles: make([]string, 0),
 	}
 
 	family := canvas.NewFontFamily("ubuntu-mono")

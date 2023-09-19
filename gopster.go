@@ -20,6 +20,8 @@ func (c *Chart) Generate() image.Image {
 	}
 	height += chartTitleMargin
 
+	c.buildTitles()
+
 	maxTitleWidth := c.maxTitleWidth()
 	if c.showTitles {
 		width += maxTitleWidth
@@ -70,8 +72,7 @@ func (c *Chart) Generate() image.Image {
 		font := c.family.Face(chartItemTitlePt, c.color, canvas.FontBlack, canvas.FontNormal)
 
 		currentHeight := chartTitleMargin + c.gap
-		count := 1
-		for i, item := range c.items {
+		for i, title := range c.titles {
 			if i == c.width*c.height {
 				break
 			}
@@ -80,22 +81,12 @@ func (c *Chart) Generate() image.Image {
 				currentHeight += 25
 			}
 
-			titleString := item.title
-			if item.creator != "" {
-				titleString = fmt.Sprintf("%s - %s", item.creator, titleString)
-			}
-
-			if c.showNumbers {
-				titleString = fmt.Sprintf("%d. %s", count, titleString)
-			}
-
-			count++
 			currentHeight += 25
 
 			ctx.DrawText(
 				width-maxTitleWidth+10,
 				currentHeight,
-				canvas.NewTextLine(font, titleString, canvas.Left),
+				canvas.NewTextLine(font, title, canvas.Left),
 			)
 		}
 	}
@@ -108,8 +99,8 @@ func (c *Chart) maxTitleWidth() float64 {
 
 	font := c.family.Face(chartItemTitlePt, c.color, canvas.FontBlack, canvas.FontNormal)
 
-	for _, i := range c.items {
-		width := font.TextWidth(i.title) * mmToPixel
+	for _, i := range c.titles {
+		width := font.TextWidth(i)
 		if width > maxTitleWidth {
 			maxTitleWidth = width
 		}
@@ -159,4 +150,25 @@ func (c *Chart) findCenteringOffset(dim float64) float64 {
 		return math.Floor((chartItemSize - dim) / 2)
 	}
 	return 0
+}
+
+func (c *Chart) buildTitles() {
+	count := 1
+	for i, item := range c.items {
+		if i == c.width*c.height {
+			break
+		}
+
+		titleString := item.title
+		if item.creator != "" {
+			titleString = fmt.Sprintf("%s - %s", item.creator, titleString)
+		}
+
+		if c.showNumbers {
+			titleString = fmt.Sprintf("%d. %s", count, titleString)
+		}
+
+		c.titles = append(c.titles, titleString)
+		count++
+	}
 }

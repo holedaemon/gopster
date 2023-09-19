@@ -11,6 +11,7 @@ func TestGopster(t *testing.T) {
 		ShowTitles(),
 		Width(3),
 		Height(3),
+		BackgroundColor("#c98a2a"),
 	)
 	if err != nil {
 		t.Fatalf("Error creating new chart: %s", err.Error())
@@ -28,7 +29,7 @@ func TestGopster(t *testing.T) {
 	}
 
 	for i := 0; i < 9; i++ {
-		c.MustAddItem("Get Warmer", "Bomb the Music Industry!", img)
+		c.MustAddItem("Three Cheers for Disappointment", "The Arrogant Sons of Bitches", img)
 	}
 
 	newImg := c.Generate()

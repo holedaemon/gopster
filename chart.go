@@ -1,12 +1,29 @@
 package gopster
 
 import (
+	"bytes"
+	"embed"
 	"errors"
 	"fmt"
 	"image/color"
+	"io"
+	"io/fs"
 
 	"github.com/tdewolff/canvas"
 )
+
+//go:embed resources
+var resources embed.FS
+
+var resourcesDir fs.FS
+
+func init() {
+	var err error
+	resourcesDir, err = fs.Sub(resources, "resources")
+	if err != nil {
+		panic(err)
+	}
+}
 
 // ErrorChart is returned when a chart is misconfigured.
 var ErrorChart = errors.New("gopster: error creating chart")
@@ -55,7 +72,18 @@ func NewChart(opts ...Option) (*Chart, error) {
 	}
 
 	family := canvas.NewFontFamily("ubuntu-mono")
-	if err := family.LoadFontFile("resources/ubuntu-mono.ttf", canvas.FontRegular); err != nil {
+
+	ubuntuMono, err := resourcesDir.Open("ubuntu-mono.ttf")
+	if err != nil {
+		return nil, err
+	}
+
+	var buf bytes.Buffer
+	if _, err := io.Copy(&buf, ubuntuMono); err != nil {
+		return nil, err
+	}
+
+	if err := family.LoadFont(buf.Bytes(), 0, canvas.FontRegular); err != nil {
 		return nil, err
 	}
 	c.family = family
